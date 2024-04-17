@@ -11,8 +11,8 @@ with alocated virtual harddrive details :
  2 CPUS 
 
 --------------------------------
-
-Once the VM is started there are the following steps to do :
+![alt text](windows01-step01.PNG)
+Once the VM is started there are the following steps to do:
 1. choose time zone/ currency, keyboard layout and language to install
 2. accept the license terms 
 3. custom install -> okay 
@@ -37,6 +37,13 @@ No lets add the User to its corresponding group :
 ```
 Add-LocalGroupMember -Group "GroupName" -member "UserName"
 ```
+Be sure to respect the syntax and the words because powershell is sensitive to this, or youll get error messages such as the one below in the image. 
+
+For Alice :
+![alt text](windows01-step02.PNG)
+
+For Bob :
+![alt text](windows01-step03.PNG)
 
 to grant access for Bob user to `/Users/Bob` 
 
@@ -47,11 +54,13 @@ $ACL.SetAccessRule($AccessRule)
 $ACL | Set-Acl -Path "\Users\Bob"
 (Get-ACL -Path "\Users\Bob").Access | Format-Table IdentityReference,FileSystemRights,AccessControlType,IsInherited,InheritanceFlags -AutoSize
 ```
+![alt text](windows01-step04.PNG)
 
 **To forbid User Bob from accessing any other file other than his folder do:**  
 
 from the admin account right click and Local Disk (C:) and go to _Property_ then go to _Edit_ Click on Bob and click on _Remove_ And tada Bob will be totally unable to access any other file of Local Disk (C:) other than his own path.
 
+![alt text](windows01-step06.PNG)
 
 ## windows defender set up (Built-in Antivirus software)
 settings -> update & security -> windows security -> virus threat protection -> manage settings -> turn on real time protection if its not already the case.    
