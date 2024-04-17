@@ -1,17 +1,17 @@
 # WINDOWS 101
 
-## TO BEGIN WITH
+## In the beginning there was ...
 
-lets get the ISO image to start the process of installing windows 10 Pro from [here](https://info.microsoft.com/ww-landing-windows-10-enterprise.html)
+The ISO image to start the process of installing windows 10 Pro from [here](https://info.microsoft.com/ww-landing-windows-10-enterprise.html)
 
---------------------------------
-alocated virtual harddrive details : 
- 30 GB of storage space
- 2048MB of RAM
+
+with alocated virtual harddrive details : 
+ 30 GB of storage space   
+ 2048MB of RAM  
  2 CPUS 
 
 --------------------------------
-
+Once the VM is started there are the following steps to do :
 1. choose time zone/ currency, keyboard layout and language to install
 2. accept the license terms 
 3. custom install -> okay 
@@ -21,23 +21,43 @@ alocated virtual harddrive details :
 7. create security questions we picked the first 3 questions and put admin as answers. 
 8. follow the rest of the installation. 
 
+To create User Alice and Bob from powershell : 
+start with making a password and saving it into a variable called Password.
+```
+$Password = Read-Host -AsSecureString
+```	
+enter the password  and press enter. Then Let's add the user.
 
-to grant access for Bob user to /Users/Bob
 ```
-    $ACL = Get-Acl -Path "C:\Users\Bob
-    $User = New-Object System:security:Principal:Ntaccount("Bob") 
-    $ACL.SetOwner($User)
-    $ACL | Set-Acl -Path "C:\Users\Bob
-    Get-ACL -Path "C:\Users\Bob" 
-    ```
+New-LocalUser "UserName" -Password $Password -fullname "UserFullName" -Description "account description"
+```	
+No lets add the User to its corresponding group :
+
 ```
-​$ACL = Get-ACL -Path "\Users\Bob"
+Add-LocalGroupMember -Group "GroupName" -member "UserName"
+```
+
+to grant access for Bob user to `/Users/Bob` 
+
+```
+$ACL = Get-ACL -Path "\Users\Bob"
 $AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("Bob","FullControl","Allow")
 $ACL.SetAccessRule($AccessRule)
 $ACL | Set-Acl -Path "\Users\Bob"
-(Get-ACL -Path "\Users\Bob").Access | Format-Table IdentityReference,FileSystemRights,AccessControlType,IsInherited,InheritanceFlags -AutoSize```
+(Get-ACL -Path "\Users\Bob").Access | Format-Table IdentityReference,FileSystemRights,AccessControlType,IsInherited,InheritanceFlags -AutoSize
+```
 
-To forbid User Bob from accessing any other file other than his folder do :
+**To forbid User Bob from accessing any other file other than his folder do:**  
+
 from the admin account right click and Local Disk (C:) and go to _Property_ then go to _Edit_ Click on Bob and click on _Remove_ And tada Bob will be totally unable to access any other file of Local Disk (C:) other than his own path.
 
+
+## windows defender set up (Built-in Antivirus software)
+settings -> update & security -> windows security -> virus threat protection -> manage settings -> turn on real time protection if its not already the case.    
+To make this permanent type in search bar `registry Editor` open HKEY LOCAL MACHINE then software then policy options -> microsoft -> windows defender -> right click below default and option new. DWORD 32-bit value option -> Name it DisableAntiSpyware -> in Value data put 0. Which turns on windows defender then restart machine.
+
 ---
+## Firewall configuration
+follow same step as for defedender except go to Firewall & network protection check if all is on. 
+
+Go to advance
