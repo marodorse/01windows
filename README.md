@@ -11,6 +11,7 @@ with alocated virtual harddrive details :
  2 CPUS 
 
 --------------------------------
+
 Once the VM is started there are the following steps to do :
 1. choose time zone/ currency, keyboard layout and language to install
 2. accept the license terms 
